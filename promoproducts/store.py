@@ -5,14 +5,17 @@ import urllib
 import re
 from bs4 import BeautifulSoup
 from promoproducts import Promoproducts
+from models import *
+from models import Store as ModelStore
 
 
 class Store(object):
-    def __init__(self, store):
+    def __init__(self, store, store_name=None):
         self.encoding = Promoproducts().encoding
         self.stores = Promoproducts().get_stores()
 
         self.store = store
+        self.store_name = store_name
 
         self.departments = [
             'Beleza e Saúde', 'Brinquedos',
@@ -22,6 +25,9 @@ class Store(object):
             'Telefones e Celulares', 'TV e Vídeo',
             'Telefonia', 'Eletrônicos'
         ]
+
+        with db.atomic():
+            ModelStore.create_or_get(store_name=self.store_name, store_href=self.store)
 
     def call_me(self):
 
@@ -64,6 +70,12 @@ class Store(object):
                     'department_name': d.text.encode('utf8'),
                     'department_href': d['href']
                 })
+
+        store = ModelStore.create_or_get(ModelStore.store_name==self.store_name)
+
+        with db.atomic():
+            for data_dict in depts:
+                Department.create(store=store, **data_dict)
 
         return depts
 
@@ -166,7 +178,7 @@ class Store(object):
                     'product_href': p.a['href'],
                     'product_from_price': float(fp),
                     'product_on_sale': float(os),
-                    'product_available': available,
+                    'product_is_available': available,
                 }
 
                 products.append(prod)
@@ -181,11 +193,12 @@ class Store(object):
         return products
 
 class Extra(Store):
-    def __init__(self, store=None, depto_css=None, category_css=None,
+    def __init__(self, store=None, store_name=None, depto_css=None, category_css=None,
                  category_next_page_css=None,
                  product_css=None):
         self.store = store or 'http://www.extra.com.br/'
-        super(Extra, self).__init__(self.store)
+        self.store_name = 'Extra'
+        super(Extra, self).__init__(self.store, self.store_name)
 
         self.depto_css = depto_css or 'li.nav-item-todos li.navsub-item a'
         self.category_css = category_css or 'div.navigation h3.tit > a'
@@ -194,11 +207,12 @@ class Extra(Store):
 
 
 class PontoFrio(Store):
-    def __init__(self, store=None, depto_css=None, category_css=None,
+    def __init__(self, store=None, store_name=None, depto_css=None, category_css=None,
                  category_next_page_css=None,
                  product_css=None):
         self.store = store or 'http://www.pontofrio.com.br/'
-        super(PontoFrio, self).__init__(self.store)
+        self.store_name = 'Ponto Frio'
+        super(PontoFrio, self).__init__(self.store, self.store_name)
 
         self.depto_css = depto_css or 'li.todasCategorias li.it-sbmn > a'
         self.category_css = category_css or 'div.navigation h3.tit > a'
