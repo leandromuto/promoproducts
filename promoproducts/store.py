@@ -65,13 +65,13 @@ class Store(object):
 
         return depts
 
-    def get_categories(self, dept, category_css):
+    def get_categories(self, depto_css, category_css):
         """
         Get all categories from Extra departments.
         E.g. Bonecos, Playground etc from Brinquedos
 
         Args:
-            :param dept: (str) a link to department link
+            :param depto_css: (str) a link to department link
 
         Return:
             :return:
@@ -80,7 +80,7 @@ class Store(object):
         categories = []
 
         # HTML of department page
-        html = urllib.urlopen(dept).read()
+        html = urllib.urlopen(depto_css).read()
 
         # making a soup
         soup = BeautifulSoup(html, "html.parser", from_encoding=self.encoding)
@@ -96,12 +96,12 @@ class Store(object):
 
         return categories
 
-    def get_products(self, category, product_css):
+    def get_products(self, category_css, product_css):
         """
         Get all products from one category.
 
         Param:
-            :param category: (str) a link to the category from department
+            :param category_css: (str) a link to the category from department
             :param product: (str) the CSS of product wrapper
             :param from_price: (str) the CSS of normal price of product
             :param on_sale: (str) the CSS of on sale price of product
@@ -113,7 +113,7 @@ class Store(object):
         products = []
 
         # HTML of category page
-        html = urllib.urlopen(category).read()
+        html = urllib.urlopen(category_css).read()
 
         # making a soup
         soup = BeautifulSoup(html, "html.parser", from_encoding=self.encoding)
@@ -226,14 +226,14 @@ class Extra(Store):
     def call_me(self):
         super(Extra, self).call_me()
     
-    def get_departments(self, depto):
-        return super(Extra, self).get_departments(depto)
+    def get_departments(self, depto_css):
+        return super(Extra, self).get_departments(depto_css)
 
-    def get_categories(self, dept, category):
-        return super(Extra, self).get_categories(dept, category)
+    def get_categories(self, depto_css, category_css):
+        return super(Extra, self).get_categories(depto_css, category_css)
 
-    def get_products(self, category, product_css):
-        return super(Extra, self).get_products(category, product_css)
+    def get_products(self, category_css, product_css):
+        return super(Extra, self).get_products(category_css, product_css)
 
 class PontoFrio(Store):
     def call_me(self):
@@ -242,11 +242,11 @@ class PontoFrio(Store):
     def get_departments(self, depto_css):
         return super(PontoFrio, self).get_departments(depto_css)
 
-    def get_categories(self, dept, category_css):
-        return super(PontoFrio, self).get_categories(dept, category_css)
+    def get_categories(self, depto_css, category_css):
+        return super(PontoFrio, self).get_categories(depto_css, category_css)
 
-    def get_products(self, category, product_css):
-        return super(PontoFrio, self).get_products(category, product_css)
+    def get_products(self, category_css, product_css):
+        return super(PontoFrio, self).get_products(category_css, product_css)
 
 class RicardoEletro(Store):
     def call_me(self):
@@ -255,8 +255,10 @@ class RicardoEletro(Store):
     def get_departments(self, depto_css):
         return super(RicardoEletro, self).get_departments(depto_css)
 
-    def get_categories(self, dept, category_css):
-        return super(RicardoEletro, self).get_categories(dept, category_css)
+    def get_categories(self, depto_css, category_css):
+        return super(RicardoEletro, self).get_categories(depto_css,
+                                                         category_css)
 
-    def get_products(self, category, product_css):
-        return super(RicardoEletro, self).get_products(category, product_css)
+    def get_products(self, category_css, product_css):
+        return super(RicardoEletro, self).get_products(category_css,
+                                                       product_css)
