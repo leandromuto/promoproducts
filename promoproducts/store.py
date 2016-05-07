@@ -56,7 +56,6 @@ class Store(object):
 
         # making a soup
         soup = BeautifulSoup(html, "html.parser", from_encoding=self.encoding)
-
         departments_link = soup.select(self.depto_css)
 
         for d in departments_link:
@@ -139,7 +138,7 @@ class Store(object):
             else:
                 os = re.findall(r'([0-9]+\W+[0-9].)',
                                 str(on_sale).replace(',', '.'))[0]
-                # import pdb; pdb.set_trace()
+
             if from_price is None:
                 fp = os
             else:
@@ -155,8 +154,6 @@ class Store(object):
                 'product_on_sale': float(os),
                 'product_available': available,
             }
-
-            # print(prod)
 
             products.append(prod)
 
@@ -228,8 +225,9 @@ class Store(object):
 
 
 class Extra(Store):
-    def __init__(self, depto_css=None, category_css=None, product_css=None):
-        super(Extra, self).__init__('http://www.extra.com.br')
+    def __init__(self, store=None, depto_css=None, category_css=None, product_css=None):
+        self.store = store or 'http://www.extra.com.br/'
+        super(Extra, self).__init__(self.store)
 
         self.depto_css = depto_css or 'li.nav-item-todos li.navsub-item a'
         self.category_css = category_css or 'div.navigation h3.tit > a'
@@ -237,19 +235,13 @@ class Extra(Store):
 
 
 class PontoFrio(Store):
-    def call_me(self):
-        super(PontoFrio, self).call_me()
+    def __init__(self, store=None, depto_css=None, category_css=None, product_css=None):
+        self.store = store or 'http://www.pontofrio.com.br/'
+        super(PontoFrio, self).__init__(self.store)
 
-    def get_departments(self):
-        return super(PontoFrio, self).get_departments(self.depto_css)
-
-    def get_categories(self):
-        return super(PontoFrio, self).get_categories(self.depto_css,
-                                                     self.category_css)
-
-    def get_products(self):
-        return super(PontoFrio, self).get_products(self.category_css,
-                                                   self.product_css)
+        self.depto_css = depto_css or 'li.todasCategorias li.it-sbmn > a'
+        self.category_css = category_css or 'div.navigation h3.tit > a'
+        self.product_css = product_css or 'div.lista-produto div.hproduct'
 
 
 class RicardoEletro(Store):
