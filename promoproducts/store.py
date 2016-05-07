@@ -171,13 +171,13 @@ class Store(object):
 
                 products.append(prod)
 
-                category_next_page = soup.select('div.pagination li.next > a')
+                category_next_page = soup.select(self.category_next_page_css)
 
                 if category_next_page:
                     category_next_page = category_next_page[0]['href']
                 else:
                     next_page = False
-        print(len(products))
+
         return products
 
 class Extra(Store):
