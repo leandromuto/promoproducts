@@ -181,22 +181,28 @@ class Store(object):
         return products
 
 class Extra(Store):
-    def __init__(self, store=None, depto_css=None, category_css=None, product_css=None):
+    def __init__(self, store=None, depto_css=None, category_css=None,
+                 category_next_page_css=None,
+                 product_css=None):
         self.store = store or 'http://www.extra.com.br/'
         super(Extra, self).__init__(self.store)
 
         self.depto_css = depto_css or 'li.nav-item-todos li.navsub-item a'
         self.category_css = category_css or 'div.navigation h3.tit > a'
+        self.category_next_page_css = category_next_page_css or 'div.pagination li.next > a'
         self.product_css = product_css or 'div.lista-produto div.hproduct'
 
 
 class PontoFrio(Store):
-    def __init__(self, store=None, depto_css=None, category_css=None, product_css=None):
+    def __init__(self, store=None, depto_css=None, category_css=None,
+                 category_next_page_css=None,
+                 product_css=None):
         self.store = store or 'http://www.pontofrio.com.br/'
         super(PontoFrio, self).__init__(self.store)
 
         self.depto_css = depto_css or 'li.todasCategorias li.it-sbmn > a'
         self.category_css = category_css or 'div.navigation h3.tit > a'
+        self.category_next_page_css = category_next_page_css or 'div.pagination li.next > a'
         self.product_css = product_css or 'div.lista-produto div.hproduct'
 
 
