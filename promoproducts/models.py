@@ -4,24 +4,27 @@ db = SqliteDatabase('promo.db')
 
 
 class Store(Model):
-    id = PrimaryKeyField()
-    store_name = CharField()
-    store_href = CharField()
+    id = PrimaryKeyField(unique=True)
+    store_name = CharField(unique=True)
+    store_href = CharField(unique=True)
 
 
 class Department(Model):
+    id = PrimaryKeyField(unique=True)
     department_name = CharField()
     department_href = CharField()
     store = ForeignKeyField(Store)
 
 
 class Category(Model):
+    id = PrimaryKeyField(unique=True)
     category_name = CharField()
     category_href = CharField()
     departments = ForeignKeyField(Department)
 
 
 class Product(Model):
+    id = PrimaryKeyField(unique=True)
     product_name = CharField()
     product_img_url = CharField()
     product_url = CharField()
@@ -32,9 +35,9 @@ class Product(Model):
 
 
 class Coupon(Model):
-    id = PrimaryKeyField()
-    codigo = CharField()
-    stores = ForeignKeyField(Store)
+    id = PrimaryKeyField(unique=True)
+    coupon_code = CharField()
+    coupon_store = ForeignKeyField(Store)
 
 
 def create_tables():

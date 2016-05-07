@@ -1,8 +1,8 @@
 import urllib
-import pdb
 import time
 from bs4 import BeautifulSoup
 from promoproducts import Promoproducts
+from models import Coupon as ModelCoupon
 
 class Coupon(object):
     def __init__(self):
@@ -52,11 +52,12 @@ class Coupon(object):
 
                 if cod:
                     val = {
-                            "cod": cod[0]['data-cupom'],
-                            "store": store,
-                            "time": time.strftime("%x")
+                            'coupon_code': cod[0]['data-cupom'],
+                            'coupon_store': store,
+                            'time': time.strftime("%x")
                           }
                     self.valid_coupons.append(dict(val))
+                    ModelCoupon.get_or_create(ModelCoupon.coupon_code==val['coupon_code'])
 
         return self.valid_coupons
 

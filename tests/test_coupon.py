@@ -27,7 +27,7 @@ class ExtraTest(unittest.TestCase):
 
         self.assertEqual(departments[0]['department_name'],
                          'Beleza e Sa\xc3\xbade')
-
+    #
     # def test_get_categories(self):
     #     extra = Extra()
     #     departments = extra.get_departments()
@@ -38,7 +38,7 @@ class ExtraTest(unittest.TestCase):
     #
     #     self.assertEqual(category[0]['category_name'],
     #                      'Cuidados Femininos')
-    #
+
     # def test_get_products(self):
     #     store = Extra()
     #     departments = store.get_departments()
@@ -96,7 +96,7 @@ class PontoFrioTest(unittest.TestCase):
 #
 #         self.assertEqual(departments[0]['department_name'],
 #                          'Beleza e Sa\xc3\xbade')
-
+#
     # def test_get_categories(self):
     #     re = RicardoEletro('http://www.ricardoeletro.com.br')
     #     departments = w.get_departments('li.todasCategorias li.it-sbmn > a')

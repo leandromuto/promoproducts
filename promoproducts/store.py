@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from promoproducts import Promoproducts
 from models import *
 from models import Store as ModelStore
+from models import Department as ModelDepartment
 
 
 class Store(object):
@@ -27,7 +28,7 @@ class Store(object):
         ]
 
         with db.atomic():
-            ModelStore.create_or_get(store_name=self.store_name, store_href=self.store)
+            ModelStore.get_or_create(store_name=self.store_name, store_href=self.store)
 
     def call_me(self):
 
@@ -71,11 +72,14 @@ class Store(object):
                     'department_href': d['href']
                 })
 
-        store = ModelStore.create_or_get(ModelStore.store_name==self.store_name)
+        # existing or new row in Store table
+        store = ModelStore.get_or_create(store_name=self.store_name, store_href=self.store)
 
+        # opening connection with db
         with db.atomic():
             for data_dict in depts:
-                Department.create(store=store, **data_dict)
+                # inserting in Department table
+                ModelDepartment.create(store=store[0], **data_dict)
 
         return depts
 
@@ -107,6 +111,11 @@ class Store(object):
                 'category_name': c.text.encode('utf8'),
                 'category_href': c['href']
             })
+
+        with db.atomic():
+            for c in categories:
+                pass
+
 
         return categories
 
@@ -194,8 +203,7 @@ class Store(object):
 
 class Extra(Store):
     def __init__(self, store=None, store_name=None, depto_css=None, category_css=None,
-                 category_next_page_css=None,
-                 product_css=None):
+                 category_next_page_css=None, product_css=None):
         self.store = store or 'http://www.extra.com.br/'
         self.store_name = 'Extra'
         super(Extra, self).__init__(self.store, self.store_name)
