@@ -13,25 +13,25 @@ class Department(Model):
     id = PrimaryKeyField(unique=True)
     department_name = CharField()
     department_href = CharField()
-    store = ForeignKeyField(Store)
+    department_store = ForeignKeyField(Store)
 
 
 class Category(Model):
     id = PrimaryKeyField(unique=True)
     category_name = CharField()
     category_href = CharField()
-    department = ForeignKeyField(Department)
+    category_department = ForeignKeyField(Department)
 
 
 class Product(Model):
     id = PrimaryKeyField(unique=True)
     product_name = CharField()
-    product_img_url = CharField()
-    product_url = CharField()
+    product_img = CharField()
+    product_href = CharField()
     product_from_price = FloatField()
     product_on_sale = FloatField()
     product_is_available = IntegerField()
-    product_categories = ForeignKeyField(Category)
+    product_category = ForeignKeyField(Category)
 
 
 class Coupon(Model):

@@ -79,7 +79,7 @@ class Store(object):
         with db.atomic():
             for data_dict in depts:
                 # inserting in Department table
-                ModelDepartment.create(store=store[0], **data_dict)
+                ModelDepartment.create(department_store=store[0], **data_dict)
 
         return depts
 
@@ -118,7 +118,7 @@ class Store(object):
             dept_fk = ModelDepartment.get_or_create(department_name=department_name, department_href=department_href)
 
             for category_dict in categories:
-                Category.get_or_create(department=dept_fk[0], **category_dict)
+                Category.get_or_create(category_department=dept_fk[0], **category_dict)
 
         return categories
 
@@ -126,14 +126,13 @@ class Store(object):
         """
         Get all products from one category.
         Param:
-            :param category: (str) a link to the category from department
-            :param product: (str) the CSS of product wrapper
-            :param from_price: (str) the CSS of normal price of product
-            :param on_sale: (str) the CSS of on sale price of product
-            :param next_page: (str) the CSS of next page link
+            :param category: (dict) a dict containing category_name and category_href
         Return:
             :return: Returns a list of products informations
         """
+
+        category_name = category['category_name']
+        category_href = category['category_href']
 
         first_time = True
 
@@ -146,9 +145,9 @@ class Store(object):
 
             if first_time:
                 # HTML of category page
-                html = urllib.urlopen(category).read()
-
+                html = urllib.urlopen(category_href).read()
                 first_time = False
+
             else:
                 # HTML of category page
                 html = urllib.urlopen(category_next_page).read()
@@ -199,6 +198,12 @@ class Store(object):
                     category_next_page = category_next_page[0]['href']
                 else:
                     next_page = False
+
+        with db.atomic():
+            category_fk = Category.get_or_create(category_name=category_name, category_href=category_href)
+
+            for item in products:
+                Product.create_or_get(product_category=category_fk[0], **item)
 
         return products
 

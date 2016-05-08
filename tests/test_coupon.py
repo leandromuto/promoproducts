@@ -39,18 +39,18 @@ class ExtraTest(unittest.TestCase):
         self.assertEqual(category[0]['category_name'],
                          'Cuidados Femininos')
 
-    # def test_get_products(self):
-    #     store = Extra()
-    #     departments = store.get_departments()
-    #     category = store.get_categories(departments[0]['department_href'])
-    #     products = store.get_products(category[0]['category_href'])
-    #
-    #     self.assertIsInstance(products[0]['product_from_price'], float)
-    #     self.assertIsInstance(products[0]['product_available'], int)
-    #     self.assertEqual(products[0]['product_href'], u'http://www.extra.com.br/BelezaSaude/cuidadosfemininos/modelaroreseescovasrotativas/Escova-Rotativa-Philco-Spin-Brush-55401001-Preta-Vermelha-1654285.html?recsource=busca-int&rectype=busca-105')
-    #     self.assertIsInstance(products[0]['product_on_sale'], float)
-    #     self.assertEqual(products[0]['product_name'], u'Escova Rotativa Philco Spin Brush 55401001 - Preta/Vermelha')
-    #     self.assertEqual(products[0]['product_img'], u'http://www.extra-imagens.com.br/BelezaSaude/cuidadosfemininos/modelaroreseescovasrotativas/1654285/6749539/Escova-Rotativa-Philco-Spin-Brush-55401001-Preta-Vermelha-1654285.jpg')
+    def test_get_products(self):
+        store = Extra()
+        departments = store.get_departments()
+        category = store.get_categories(departments[0])
+        products = store.get_products(category[0])
+
+        self.assertIsInstance(products[0]['product_from_price'], float)
+        self.assertIsInstance(products[0]['product_is_available'], int)
+        self.assertEqual(products[0]['product_href'], u'http://www.extra.com.br/BelezaSaude/cuidadosfemininos/modelaroreseescovasrotativas/Escova-Rotativa-Philco-Spin-Brush-55401001-Preta-Vermelha-1654285.html?recsource=busca-int&rectype=busca-105')
+        self.assertIsInstance(products[0]['product_on_sale'], float)
+        self.assertEqual(products[0]['product_name'], u'Escova Rotativa Philco Spin Brush 55401001 - Preta/Vermelha')
+        self.assertEqual(products[0]['product_img'], u'http://www.extra-imagens.com.br/BelezaSaude/cuidadosfemininos/modelaroreseescovasrotativas/1654285/6749539/Escova-Rotativa-Philco-Spin-Brush-55401001-Preta-Vermelha-1654285.jpg')
 
 class PontoFrioTest(unittest.TestCase):
 
