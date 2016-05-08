@@ -20,7 +20,7 @@ class Category(Model):
     id = PrimaryKeyField(unique=True)
     category_name = CharField()
     category_href = CharField()
-    departments = ForeignKeyField(Department)
+    department = ForeignKeyField(Department)
 
 
 class Product(Model):

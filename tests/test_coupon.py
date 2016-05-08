@@ -27,17 +27,17 @@ class ExtraTest(unittest.TestCase):
 
         self.assertEqual(departments[0]['department_name'],
                          'Beleza e Sa\xc3\xbade')
-    #
-    # def test_get_categories(self):
-    #     extra = Extra()
-    #     departments = extra.get_departments()
-    #     category = extra.get_categories(departments[0]['department_href'])
-    #
-    #     self.assertEqual(category[0]['category_href'],
-    #                      'http://www.extra.com.br/BelezaSaude/cuidadosfemininos/?Filtro=C102_C105')
-    #
-    #     self.assertEqual(category[0]['category_name'],
-    #                      'Cuidados Femininos')
+
+    def test_get_categories(self):
+        extra = Extra()
+        departments = extra.get_departments()
+        category = extra.get_categories(departments[0])
+
+        self.assertEqual(category[0]['category_href'],
+                         'http://www.extra.com.br/BelezaSaude/cuidadosfemininos/?Filtro=C102_C105')
+
+        self.assertEqual(category[0]['category_name'],
+                         'Cuidados Femininos')
 
     # def test_get_products(self):
     #     store = Extra()

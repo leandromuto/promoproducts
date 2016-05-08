@@ -87,18 +87,19 @@ class Store(object):
         """
         Get all categories from Extra departments.
         E.g. Bonecos, Playground etc from Brinquedos
-
         Args:
-            :param depto: (str) a link to department link
-
+            :param depto: (dict) a dict containing department_name and department_href
         Return:
             :return:
         """
 
+        department_name = depto['department_name']
+        department_href = depto['department_href']
+
         categories = []
 
         # HTML of department page
-        html = urllib.urlopen(depto).read()
+        html = urllib.urlopen(department_href).read()
 
         # making a soup
         soup = BeautifulSoup(html, "html.parser", from_encoding=self.encoding)
@@ -113,23 +114,23 @@ class Store(object):
             })
 
         with db.atomic():
-            for c in categories:
-                pass
+            # existing or new row in Store table
+            dept_fk = ModelDepartment.get_or_create(department_name=department_name, department_href=department_href)
 
+            for category_dict in categories:
+                Category.get_or_create(department=dept_fk[0], **category_dict)
 
         return categories
 
     def get_products(self, category):
         """
         Get all products from one category.
-
         Param:
             :param category: (str) a link to the category from department
             :param product: (str) the CSS of product wrapper
             :param from_price: (str) the CSS of normal price of product
             :param on_sale: (str) the CSS of on sale price of product
             :param next_page: (str) the CSS of next page link
-
         Return:
             :return: Returns a list of products informations
         """
