@@ -8,6 +8,9 @@ class Store(Model):
     store_name = CharField(unique=True)
     store_href = CharField(unique=True)
 
+    class Meta:
+        database = db
+
 
 class Department(Model):
     id = PrimaryKeyField(unique=True)
@@ -16,11 +19,18 @@ class Department(Model):
     department_store = ForeignKeyField(Store)
 
 
+    class Meta:
+        database = db
+
+
 class Category(Model):
     id = PrimaryKeyField(unique=True)
     category_name = CharField()
     category_href = CharField()
     category_department = ForeignKeyField(Department)
+
+    class Meta:
+        database = db
 
 
 class Product(Model):
@@ -33,11 +43,17 @@ class Product(Model):
     product_is_available = IntegerField()
     product_category = ForeignKeyField(Category)
 
+    class Meta:
+        database = db
+
 
 class Coupon(Model):
     id = PrimaryKeyField(unique=True)
     coupon_code = CharField()
     coupon_store = ForeignKeyField(Store)
+
+    class Meta:
+        database = db
 
 
 def create_tables():
