@@ -31,8 +31,15 @@ $ python promosite/manage.py createsuperuser
 $ python promosite/manage.py runserver
 ```
 
+To flush database:
+
+```
+$ python promosite/manage.py flush
+```
+
 To run tests:
 
 ```
-$ nosetests
+$ cd promosite
+$ python promosite/test_coupon.py
 ```

@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import urllib
-
-import re
-from bs4 import BeautifulSoup
 
 import django
 import os
-import sys
-sys.path.append('promosite')
+import re
+from bs4 import BeautifulSoup
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "promosite.settings")
+sys.path.append('.')
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 django.setup()
 
 from promosite.models import Store as ModelStore
@@ -21,9 +21,6 @@ from promosite.models import Product
 
 class Store(object):
     def __init__(self, store, store_name=None):
-        self.encoding = Promoproducts().encoding
-        self.stores = Promoproducts().get_stores()
-
         self.store = store
         self.store_name = store_name
 
@@ -36,8 +33,8 @@ class Store(object):
             'Telefonia', 'Eletrônicos'
         ]
 
-        with db.atomic():
-            ModelStore.get_or_create(store_name=self.store_name, store_href=self.store)
+        ModelStore.objects.get_or_create(store_name=self.store_name,
+                                         store_href=self.store)
 
     def call_me(self):
 
@@ -71,7 +68,7 @@ class Store(object):
         html = urllib.urlopen(self.store).read()
 
         # making a soup
-        soup = BeautifulSoup(html, "html.parser", from_encoding=self.encoding)
+        soup = BeautifulSoup(html, "html.parser", from_encoding='utf-8')
         departments_link = soup.select(self.depto_css)
 
         for d in departments_link:
@@ -82,13 +79,14 @@ class Store(object):
                 })
 
         # existing or new row in Store table
-        store = ModelStore.get_or_create(store_name=self.store_name, store_href=self.store)
+        store = ModelStore.objects.get(store_name=self.store_name,
+                                       store_href=self.store)
 
         # opening connection with db
-        with db.atomic():
-            for data_dict in depts:
-                # inserting in Department table
-                ModelDepartment.create(department_store=store[0], **data_dict)
+        for data_dict in depts:
+            # inserting in Department table
+            ModelDepartment.objects.create(department_store=store,
+                                           **data_dict)
 
         return depts
 
@@ -111,7 +109,7 @@ class Store(object):
         html = urllib.urlopen(department_href).read()
 
         # making a soup
-        soup = BeautifulSoup(html, "html.parser", from_encoding=self.encoding)
+        soup = BeautifulSoup(html, "html.parser", from_encoding='utf-8')
 
         # all categories available
         categories_link = soup.select(self.category_css)
@@ -122,12 +120,13 @@ class Store(object):
                 'category_href': c['href']
             })
 
-        with db.atomic():
-            # existing or new row in Store table
-            dept_fk = ModelDepartment.get_or_create(department_name=department_name, department_href=department_href)
+        # existing or new row in Store table
+        dept_fk = ModelDepartment.objects.get(department_name=department_name,
+                                              department_href=department_href)
 
-            for category_dict in categories:
-                Category.get_or_create(category_department=dept_fk[0], **category_dict)
+        for category_dict in categories:
+            Category.objects.get_or_create(category_department=dept_fk,
+                                           **category_dict)
 
         return categories
 
@@ -162,7 +161,8 @@ class Store(object):
                 html = urllib.urlopen(category_next_page).read()
 
             # making a soup
-            soup = BeautifulSoup(html, "html.parser", from_encoding=self.encoding)
+            soup = BeautifulSoup(html, "html.parser",
+                                 from_encoding='utf-8')
 
             # prods from page
             ps = soup.select(self.product_css)
@@ -173,7 +173,8 @@ class Store(object):
                 available = 1
 
                 # prod price
-                from_price = p.find('span', attrs={'class': 'from price regular'})
+                from_price = p.find('span',
+                                    attrs={'class': 'from price regular'})
                 on_sale = p.find('span', attrs={'class': 'for price sale'})
 
                 if on_sale is None:
@@ -208,16 +209,18 @@ class Store(object):
                 else:
                     next_page = False
 
-        with db.atomic():
-            category_fk = Category.get_or_create(category_name=category_name, category_href=category_href)
+        category_fk = Category.objects.get(category_name=category_name,
+                                           category_href=category_href)
 
-            for item in products:
-                Product.create_or_get(product_category=category_fk[0], **item)
+        for item in products:
+            Product.objects.get_or_create(product_category=category_fk, **item)
 
         return products
 
+
 class Extra(Store):
-    def __init__(self, store=None, store_name=None, depto_css=None, category_css=None,
+    def __init__(self, store=None, store_name=None, depto_css=None,
+                 category_css=None,
                  category_next_page_css=None, product_css=None):
         self.store = store or 'http://www.extra.com.br/'
         self.store_name = 'Extra'
@@ -230,7 +233,8 @@ class Extra(Store):
 
 
 class PontoFrio(Store):
-    def __init__(self, store=None, store_name=None, depto_css=None, category_css=None,
+    def __init__(self, store=None, store_name=None, depto_css=None,
+                 category_css=None,
                  category_next_page_css=None,
                  product_css=None):
         self.store = store or 'http://www.pontofrio.com.br/'

@@ -2,7 +2,16 @@ import urllib
 import time
 from bs4 import BeautifulSoup
 from promoproducts import Promoproducts
-from models import Coupon as ModelCoupon
+
+import django
+import os
+import sys
+sys.path.append('../promosite')
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "promosite.settings")
+django.setup()
+
+from promosite.models import *
 
 class Coupon(object):
     def __init__(self):
